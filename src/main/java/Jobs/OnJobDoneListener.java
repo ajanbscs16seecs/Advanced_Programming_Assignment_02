@@ -9,5 +9,5 @@ import java.util.Map;
 
 public interface OnJobDoneListener {
 
-    void onJobDone(Map<Character, Integer> counted);
+    void onJobDone(int id, Map<Character, Integer> counted);
 }

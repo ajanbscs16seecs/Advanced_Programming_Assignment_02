@@ -12,35 +12,35 @@ public class Counter implements Runnable{
 
 
 
+    int id;
     char[] chars;
     OnJobDoneListener onJobDoneListener;
 
     Map<Character,Integer> counted;
 
 
-    public Counter(char[] chars, OnJobDoneListener onJobDoneListener) {
+    public Counter(int id,char[] chars, OnJobDoneListener onJobDoneListener) {
         this.chars = chars;
+        this.id = id;
         this.onJobDoneListener = onJobDoneListener;
     }
 
     @Override
     public void run() {
+        count();
+    }
 
+    public void count(){
         counted = new HashMap<>();
 
+        for (char aChar : chars) {
+            if(aChar!=0){
+                counted.put(aChar, counted.getOrDefault(aChar,0) + 1);
 
-        int length = chars.length;
-        for(int i = 0 ; i<length; i++){
-            if(counted.containsKey(chars[i])){
-                counted.put(chars[i],counted.get(chars[i]) + 1);
-            }
-            else{
-                counted.put(chars[i],0);
             }
         }
 
-        onJobDoneListener.onJobDone(counted);
-
+        onJobDoneListener.onJobDone(id,counted);
     }
 
 

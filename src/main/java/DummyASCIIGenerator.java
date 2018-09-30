@@ -35,7 +35,7 @@ public class DummyASCIIGenerator {
     private static String getRandomASCII(int chunkSize) {
         char[] temp = new char[chunkSize];
         for(int i =0; i<chunkSize;i++){
-            temp[i] = characters[(int)(Math.random()*chunkSize)];
+            temp[i] = characters[(int)(Math.random()*characters.length)];
         }
         String s = new String(temp);
         return s;
