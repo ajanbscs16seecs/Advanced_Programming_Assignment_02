@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Author: Arif
@@ -18,8 +20,8 @@ import java.util.concurrent.TimeUnit;
 public class CountManager {
 
 
-    volatile Map<Character,Integer> counts = new HashMap<>();
-
+     Map<Character,Integer> counts = new HashMap<>();
+    private final Lock lock = new ReentrantLock();
 
 
     File file;
@@ -28,7 +30,6 @@ public class CountManager {
     boolean noThreads;
 
     public CountManager(File file,int numberOfThreads,int chunkSize) throws FileNotFoundException {
-
 
         this.file = file;
         this.chunkSize = chunkSize;
@@ -43,13 +44,38 @@ public class CountManager {
     }
 
 
-    synchronized void mergeCounts(Map<Character,Integer> map){
+//    void setMap(Map<Character,Integer> a){
+//        synchronized (lock){
+//            this.counts= a;
+//        }
+//    }
+//    Map<Character,Integer> getCounts(){
+//        synchronized (lock){
+//            return this.counts;
+//        }
+//    }
+    void mergeCounts(Map<Character,Integer> map){
 
-        for (char c :
-                map.keySet()) {
-            counts.put(c,(counts.getOrDefault(c, 0))+map.get(c));
+        try {
+            lock.lock();
 
+
+            for (char c :
+                    map.keySet()) {
+                counts.put(c, (counts.getOrDefault(c, 0)) + map.get(c));
+
+            }
+
+
+        } finally {
+            lock.unlock();
         }
+
+
+
+
+
+
     }
 
     void init() throws Exception {
@@ -62,7 +88,9 @@ public class CountManager {
 
         while(fileReader.read(c)!=-1){
             Counter counter = new Counter(id,c, (id1,map)->{
-                this.mergeCounts(map);
+                synchronized (lock){
+                    this.mergeCounts(map);
+                }
 //                System.out.println("Result of chuck: "+id1);
             });
 

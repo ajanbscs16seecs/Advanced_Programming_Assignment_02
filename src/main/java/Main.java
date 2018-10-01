@@ -14,39 +14,48 @@ public class Main {
     public static void main(String args[]){
         List<String> list = Arrays.asList(args);
 
+        File file = null;
 
         try {
-            File file = new File("sample.txt");
+            file = new File("sample.txt");
             //Create the fileReader
-            if (file.createNewFile())
-            {
+            if (file.createNewFile()) {
                 System.out.println("File is created!");
             } else {
                 System.out.println("File already exists.");
             }
 
 
-
-            if(!list.contains("--nonew")){
-                DummyASCIIGenerator.writeDummyTextToFile(file,500000,1000);
+            if (!list.contains("--nonew")) {
+                DummyASCIIGenerator.writeDummyTextToFile(file, 10000000, 1000);
                 System.out.println("New dummy data written");
-            }
-            else {
+            } else {
                 System.out.println("Using previous dummy data.");
             }
 
-
-
-            onFileReady(file);
-
-
-
-
-
-        } catch (Exception e) {
+        }
+        catch (Exception e){
             e.printStackTrace();
         }
 
+        do{
+
+
+            try {
+
+
+                onFileReady(file);
+
+
+
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        while(true);
 
 
     }
